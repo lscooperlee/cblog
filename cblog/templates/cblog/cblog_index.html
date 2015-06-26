@@ -1,0 +1,24 @@
+{% extends "cblog_base.html" %}
+{% block css %}
+{% load staticfiles %}
+<link rel="stylesheet" type="text/css" href={% static "cblog/article.css" %}>
+{% endblock %}
+{% block section %}
+    <ol>
+    {% for entry in entry_list %}
+        <li>
+            <div class="ribbon">
+                <a>
+                    <div class="ribbon_content">
+                        Jul 12
+                    </div>
+                </a>
+            </div>
+            <div class="article">
+                <div class="article_title"><a href="#">{{ entry.title }}</a></div>
+                <div class="article_body">{{ entry.body }}</div>
+            </div>
+        </li>
+    {% endfor %}
+    </ol>
+{% endblock %}
