@@ -9,10 +9,10 @@ from django.template import RequestContext
 
 
 def cblog_login(request):
-    if "next" not in request.GET:
-        if request.user.is_authenticated():
-            # return HttpResponseRedirect(reverse(cblog_index))
-            return redirect('%s?next=/cblog/' % reverse(cblog_index))
+#    if "next" not in request.GET:
+#        if not request.user.is_authenticated():
+#            return HttpResponseRedirect("/cblog/login/?next=/cblog/")
+#            return redirect('%s?next=/cblog/' % reverse(cblog_login))
 
     para = {'template_name': 'cblog/cblog_login.html', 'extra_context': {"setting": setting}}
     return auth_views.login(request, **para)
@@ -22,7 +22,7 @@ def cblog_index(request):
     c = RequestContext(request,
                        {"entry_list": Entry.objects.all(),
                         "category_list": Category.objects.all(),
-                       "setting": setting,
+                        "setting": setting,
                         "user": User}
                        )
     return render_to_response("cblog/cblog_index.html", c)

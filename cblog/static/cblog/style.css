@@ -8,9 +8,10 @@ body {
     text-align: center;
 }
 
-a, a:focus {
+a {
     color: rgba(0, 158, 184, 1);
     transition: color 0.3s;
+    outline: none;
 }
 
 a:link {
@@ -113,11 +114,11 @@ nav > #welcome {
     font-size: 2.5rem;
 }
 
-header a:visited {
+header a, header a:visited {
     color: rgba(85,85,85,1);
 }
 
-nav a:visited {
+nav a, nav a:visited {
     color: rgba(185,185,185,1);
 }
 
