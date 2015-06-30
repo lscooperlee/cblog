@@ -15,14 +15,12 @@
 <input id="searchinput" placeholder="Search" type="text" autocomplete="off" >
 </header>
 <nav class="banner">
-<div id="category">
-    {% for category in category_list %}
-        {{ category.title }}
-    {% endfor %}
+<div id="category" class="listdown">
 </div>
 <div id="navigator">
     <ul>
     <li><a href="#">Home</a></li>
+    <li><a href="#">Categories</a></li>
     <li><a href="#">Articles</a></li>
     <li><a href="#">About</a>
     {% if user.is_authenticated %}
@@ -32,7 +30,7 @@
 </div>
 {% if user.is_authenticated %}
     <div id="welcome">
-        <span>welcome {{ user }}</span>
+        <a href="#"><span>logout {{ user }}</span></a>
     </div>
 {% endif %}
 </nav>

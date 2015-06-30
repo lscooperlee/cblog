@@ -12,6 +12,7 @@ a {
     color: rgba(0, 158, 184, 1);
     transition: color 0.3s;
     outline: none;
+    cursor: pointer;
 }
 
 a:link {
@@ -29,6 +30,7 @@ a:hover {
 
 a:active {
     text-decoration: underline;
+    cursor: pointer;
 }
 
 ol, ul {
@@ -87,9 +89,23 @@ nav {
     align-items: center;
 }
 
+nav > * {
+}
+
 nav > #navigator {
-    margin-left: 4rem;
     flex-grow: 12;
+    position: relative;
+}
+
+
+nav > #navigator:before{
+    content: " ";
+    border: solid;
+    border-width: 1rem 0.1rem;
+    position: absolute;
+    top:0.5rem;
+    left: -0.5rem;
+    border-color: rgba(128,128,128,0.7);
 }
 
 nav > #navigator  li {
@@ -97,9 +113,11 @@ nav > #navigator  li {
     margin-right: 1rem;
 }
 
-nav > #category {
-    margin-left: 1rem;
-}
+/*nav > #category {
+    flex-grow: 1;
+    text-align: center;
+    cursor: pointer;
+}*/
 
 nav > #welcome {
     flex-grow: 1;

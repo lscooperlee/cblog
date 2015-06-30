@@ -37,27 +37,21 @@ section > ol > li {
 }
 
 .ribbon {
-    background: #fff;
+    background: rgba(228,228,228,1);
     width: 8rem;
     position: absolute;
     left: -1rem;
+    box-shadow: 0px 2px 4px #888;
+    font-size: 1.3rem;
+    text-shadow: 0px 1px 2px #bbb;
 
 }
 
 .ribbon a{
     text-decoration: none;
-    cursor: pointer;
 }
 
-.ribbon_content {
-    font-size: 1.3rem;
-    position: relative;
-    background: rgba(228,228,228,1);
-    text-shadow: 0px 1px 2px #bbb;
-    box-shadow: 0px 2px 4px #888;
-}
-
-.ribbon_content:after {
+.ribbon:after {
     content: ' ';
     position: absolute;
     width: 0;
@@ -69,7 +63,7 @@ section > ol > li {
     border-color: #999 #999 transparent transparent;
 }
 
-.ribbon_content:before {
+.ribbon:before {
     content: ' ';
     position: absolute;
     width: 0.4rem;
@@ -82,3 +76,38 @@ section > ol > li {
 
 }
 
+.articlemanage {
+    background: rgba(228,228,228,1);
+    position: absolute;
+    top:-1rem;
+    right: 1.5rem;
+    font-size: 1.5rem;
+    box-shadow: -2px 0px 4px #888;
+    text-shadow: 0px 1px 2px #bbb;
+    height: 5rem;
+    width: 1.8rem;
+}
+
+.articlemanage a {
+    text-decoration: none;
+}
+
+.articlemanage:before {
+    position: absolute;
+    content: ' ';
+    border-width: 0.55rem 0.2rem;
+    top:0rem;
+    left: -0.4rem;
+    border-style: solid;
+    border-color: transparent #999 #999 transparent ;
+}
+
+.articlemanage:after{
+    position: absolute;
+    content: ' ';
+    bottom:-0.4rem;
+    left: -0.3rem;
+    border-width: 0rem 0.8rem 1.6rem 1.6rem;
+    border-style: solid;
+    border-color: transparent transparent white transparent;
+}

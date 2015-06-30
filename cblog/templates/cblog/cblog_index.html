@@ -8,13 +8,15 @@
     {% for entry in entry_list %}
         <li>
             <div class="ribbon">
-                <a>
-                    <div class="ribbon_content">
-                        Jul 12
-                    </div>
-                </a>
+                <a>Jul 12</a>
             </div>
-            <div class="article">
+            {% if user.is_authenticated %}
+            <div class="articlemanage">
+                <a><div class="articledelete">x</div></a>
+                <a><div class="articleedit">+</div></a>
+            </div>
+            {% endif %}
+            <div class="article" id={{ entry.slug }}>
                 <div class="article_title"><a href="#">{{ entry.title }}</a></div>
                 <div class="article_body">{{ entry.body }}</div>
             </div>
