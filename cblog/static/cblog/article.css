@@ -39,13 +39,12 @@ section > ol > li {
 
 .ribbon {
     background: rgba(228,228,228,1);
-    width: 8rem;
     position: absolute;
     left: -1rem;
     box-shadow: 0px 2px 4px #888;
     font-size: 1.3rem;
     text-shadow: 0px 1px 2px #bbb;
-
+    padding: 0.2rem 1.8rem 0.2rem 0.5rem;
 }
 
 .ribbon a{

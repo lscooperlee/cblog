@@ -1,19 +1,14 @@
-from django.shortcuts import render_to_response, HttpResponseRedirect, redirect
+from django.shortcuts import render_to_response, HttpResponseRedirect, redirect, render
 from django.core.urlresolvers import reverse
-from cblog.models import Entry, Category
-from cblog.config import setting
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.models import User
 from django.template import RequestContext
-
+from cblog.models import Entry, Category
+from cblog.config import setting
+from cblog.forms import EntryForm
 
 def cblog_login(request):
-#    if "next" not in request.GET:
-#        if not request.user.is_authenticated():
-#            return HttpResponseRedirect("/cblog/login/?next=/cblog/")
-#            return redirect('%s?next=/cblog/' % reverse(cblog_login))
-
     if request.user.is_authenticated():
             return redirect('%s' %reverse(cblog_index))
 
@@ -35,9 +30,14 @@ def cblog_index(request):
 
 @login_required(login_url="/cblog/login")
 def cblog_create(request):
-    c=RequestContext(request,
-                     {"user": User,
-                      "setting":setting,
-                      }
-                     )
-    return render_to_response("cblog/cblog_create.html",c)
+    if request.method=='POST':
+        form=EntryForm(request.POST)
+        if form.is_valid():
+            form.save()
+        else:
+            print(form)
+    else:
+        form=EntryForm()
+
+    c={"user": User,"setting":setting,"form":form}
+    return render(request, "cblog/cblog_create.html",c)

@@ -4,4 +4,9 @@
     <link rel="stylesheet" type="text/css" href={% static "cblog/create.css" %}>
 {% endblock %}
 {% block section %}
+    <form action="{% url 'reverse_cblog_create' %}" method="post">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="Submit">
+    </form>
 {% endblock %}
