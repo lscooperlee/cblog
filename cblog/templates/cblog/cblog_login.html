@@ -11,10 +11,13 @@
     <p>Your account doesn't have access to this page. To proceed,
     please login with an account that has access.</p>
     {% else %}
-    <p>Please login to see this page.</p>
+    <p>Please login</p>
     {% endif %}
 {% endif %}
 
+{% if user.is_authenrized %}
+    <p></p>
+{% else %}
 <form method="post" action="{% url 'reverse_cblog_login' %}">
 {% csrf_token %}
 <table>
@@ -32,4 +35,5 @@
 <input type="hidden" name="next" value="{{ next }}" />
 </form>
 
+{% endif %}
 {% endblock %}

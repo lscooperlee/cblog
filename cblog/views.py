@@ -14,9 +14,14 @@ def cblog_login(request):
 #            return HttpResponseRedirect("/cblog/login/?next=/cblog/")
 #            return redirect('%s?next=/cblog/' % reverse(cblog_login))
 
+    if request.user.is_authenticated():
+            return redirect('%s' %reverse(cblog_index))
+
     para = {'template_name': 'cblog/cblog_login.html', 'extra_context': {"setting": setting}}
     return auth_views.login(request, **para)
 
+def cblog_logout(request):
+    return auth_views.logout(request,next_page="%s"%reverse(cblog_index))
 
 def cblog_index(request):
     c = RequestContext(request,
@@ -28,6 +33,11 @@ def cblog_index(request):
     return render_to_response("cblog/cblog_index.html", c)
 
 
-@login_required(login_url=reverse(cblog_login))
-def cblog_edit(request):
-    pass
+@login_required(login_url="/cblog/login")
+def cblog_create(request):
+    c=RequestContext(request,
+                     {"user": User,
+                      "setting":setting,
+                      }
+                     )
+    return render_to_response("cblog/cblog_create.html",c)

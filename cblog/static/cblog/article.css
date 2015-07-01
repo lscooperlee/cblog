@@ -15,6 +15,7 @@ section > ol > li {
     padding-right: 5rem;
     position: relative;
     margin-bottom: 4rem;
+    padding-bottom: 2rem;
 }
 
 .article {

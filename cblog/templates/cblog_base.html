@@ -30,7 +30,7 @@
 </div>
 {% if user.is_authenticated %}
     <div id="welcome">
-        <a href="#"><span>logout {{ user }}</span></a>
+        <a href={% url 'reverse_cblog_logout' %}><span>logout {{ user }}</span></a>
     </div>
 {% endif %}
 </nav>
