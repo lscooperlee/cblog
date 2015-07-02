@@ -193,5 +193,6 @@ section .centerblock {
 footer {
     position: relative;
     bottom: -8rem;
-
+    height: 12rem;
+    background-color: black;
 }
