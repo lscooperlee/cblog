@@ -20,8 +20,14 @@ def cblog_logout(request):
     return auth_views.logout(request,next_page="%s"%reverse(cblog_index))
 
 def cblog_index(request):
+
+    if request.user.is_authenticated():
+        entry_list=Entry.objects.all()
+    else:
+        entry_list=Entry.objects.filter(isdraft=False)
+
     c = RequestContext(request,
-                       {"entry_list": Entry.objects.all(),
+                       {"entry_list": entry_list,
                         "category_list": Category.objects.all(),
                         "setting": setting,
                         "user":User}
