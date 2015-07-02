@@ -5,7 +5,7 @@
 {% endblock %}
 {% block section %}
     <div>
-    <form action="{% url 'reverse_cblog_edit' %}" method="post" class="centerblock">
+    <form action="{% url 'reverse_cblog_edit' id %}" method="post" class="centerblock">
     {% csrf_token %}
     {{ form.as_p }}
     <div class="submit">
