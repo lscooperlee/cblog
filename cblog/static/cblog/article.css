@@ -99,3 +99,7 @@ section > div > ol {
     border-style: solid;
     border-color: transparent transparent white transparent;
 }
+
+.darken {
+    opacity: 0.4;
+}

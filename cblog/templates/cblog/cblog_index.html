@@ -7,7 +7,11 @@
     <div>
     <ol>
     {% for entry in entry_list %}
-        <li class="centerblock">
+                {% if entry.isdraft %}
+                    <li class="centerblock darken" >
+                {% else %}
+                    <li class="centerblock" >
+                {% endif %}
             <div class="ribbon">
                 <a>{{ entry.pub_date|date:"d M Y" }}</a>
             </div>
@@ -18,12 +22,11 @@
             </div>
             {% endif %}
             <div class="article" id={{ entry.slug }}>
-                <div class="article_title"><a href="#">{{ entry.title }}</a></div>
-                <div> {{ entry.isdraft }}</div><br>
+                <div class="article_title"><a href={% url 'reverse_cblog_entry' entry.slug %}>{{ entry.title }}</a></div>
                 {% if forloop.first %}
                     <div class="article_body">{{ entry.body|safe }}</div>
                 {% else %}
-                    <div class="article_body">{{ entry.body|truncatewords_html:100 }}<a href="">MORE</a></div>
+                    <div class="article_body">{{ entry.body|truncatewords_html:100 }}<a href={% url 'reverse_cblog_entry' entry.slug %}>MORE</a></div>
                 {% endif %}
             </div>
         </li>

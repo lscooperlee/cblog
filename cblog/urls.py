@@ -7,4 +7,5 @@ urlpatterns=patterns('',
     url(r'edit/$', 'cblog.views.cblog_edit',name='reverse_cblog_edit'),
     url(r'edit/(?P<id>\d*?)/$', 'cblog.views.cblog_edit',name='reverse_cblog_edit'),
     url(r'delete/(?P<id>\d*?)$', 'cblog.views.cblog_delete',name='reverse_cblog_delete' ),
+    url(r'(?P<slug>\w+)/$','cblog.views.cblog_entry',name='reverse_cblog_entry')
 )

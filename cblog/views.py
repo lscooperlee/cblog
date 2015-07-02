@@ -1,4 +1,4 @@
-from django.shortcuts import render_to_response, HttpResponseRedirect, redirect, render, get_object_or_404
+from django.shortcuts import render_to_response, redirect, get_object_or_404
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import views as auth_views
@@ -28,6 +28,20 @@ def cblog_index(request):
                        )
     return render_to_response("cblog/cblog_index.html", c)
 
+def cblog_entry(request,slug):
+    try:
+        entry=Entry.objects.get(slug=slug)
+    except:
+        raise Http404()
+
+    c = RequestContext(request,
+                       {"entry": entry,
+                        "category_list": Category.objects.all(),
+                        "setting": setting,
+                        "user":User}
+                       )
+    return render_to_response("cblog/cblog_entry.html", c)
+
 
 @login_required(login_url="/cblog/login")
 def cblog_edit(request, id=""):
@@ -41,6 +55,7 @@ def cblog_edit(request, id=""):
         form=EntryForm(request.POST,instance=entry)
         if form.is_valid():
             form.save()
+            return redirect("/cblog/%s"%form.instance.slug)
     else:
         form=EntryForm(instance=entry)
 

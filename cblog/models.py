@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from datetime import datetime
 from django.utils.text import slugify
+from django.core.urlresolvers import reverse
 
 
 class Comment(models.Model):
@@ -39,4 +40,7 @@ class Entry(models.Model):
              update_fields=None):
         self.slug=slugify(self.title)
         super().save(force_insert,force_update,using,update_fields)
+
+    def get_absolute_url(self):
+        return reverse("/cblog/%s"%self.slug)
 
