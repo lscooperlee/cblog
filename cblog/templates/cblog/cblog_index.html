@@ -4,9 +4,10 @@
 <link rel="stylesheet" type="text/css" href={% static "cblog/article.css" %}>
 {% endblock %}
 {% block section %}
+    <div>
     <ol>
     {% for entry in entry_list %}
-        <li>
+        <li class="centerblock">
             <div class="ribbon">
                 <a>{{ entry.pub_date|date:"d M Y" }}</a>
             </div>
@@ -19,7 +20,7 @@
             <div class="article" id={{ entry.slug }}>
                 <div class="article_title"><a href="#">{{ entry.title }}</a></div>
                 {% if forloop.first %}
-                    <div class="article_body">{{ entry.body }}</div>
+                    <div class="article_body">{{ entry.body|safe }}</div>
                 {% else %}
                     <div class="article_body">{{ entry.body|truncatewords_html:100 }}<a href="">MORE</a></div>
                 {% endif %}
@@ -27,4 +28,5 @@
         </li>
     {% endfor %}
     </ol>
+    </div>
 {% endblock %}

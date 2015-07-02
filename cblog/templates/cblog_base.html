@@ -24,13 +24,13 @@
     <li><a href="#">Articles</a></li>
     <li><a href="#">About</a>
     {% if user.is_authenticated %}
-        <li><a href="{% url 'reverse_cblog_create' %}">Create</a>
+        <li><a href="{% url 'reverse_cblog_edit' %}">Create</a>
     {% endif %}
     </ul>
 </div>
 {% if user.is_authenticated %}
     <div id="welcome">
-        <a href={% url 'reverse_cblog_logout' %}><span>logout {{ user }}</span></a>
+        <a href={% url 'reverse_cblog_logout' %}><span>logout {{ user.get_username }}</span></a>
     </div>
 {% endif %}
 </nav>

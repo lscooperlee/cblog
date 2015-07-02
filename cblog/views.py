@@ -29,7 +29,7 @@ def cblog_index(request):
 
 
 @login_required(login_url="/cblog/login")
-def cblog_create(request):
+def cblog_edit(request):
     if request.method=='POST':
         form=EntryForm(request.POST)
         if form.is_valid():
@@ -39,5 +39,10 @@ def cblog_create(request):
     else:
         form=EntryForm()
 
-    c={"user": User,"setting":setting,"form":form}
-    return render(request, "cblog/cblog_create.html",c)
+#    c={"user": User,"setting":setting,"form":form}
+    c = RequestContext(request,
+                       {"form":form,
+                        "setting": setting,
+                        "user": User}
+                       )
+    return render_to_response("cblog/cblog_edit.html",c)
