@@ -32,5 +32,16 @@
         </li>
     {% endfor %}
     </ol>
+    <div class="pageblock">
+        {% if entry_list.has_previous %}
+        <span class="prevpage"><a href="?page={{ entry_list.previous_page_number }}">prev</a></span>
+        {% endif %}
+        <span class="current">
+            Page {{ entry_list.number }} of {{ entry_list.paginator.num_pages }}.
+        </span>
+        {% if entry_list.has_next %}
+        <span class="nextpage"><a href="?page={{ entry_list.next_page_number }}">next</a></span>
+        {% endif %}
+    </div>
     </div>
 {% endblock %}

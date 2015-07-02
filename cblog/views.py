@@ -5,6 +5,7 @@ from django.contrib.auth import views as auth_views
 from django.contrib.auth.models import User
 from django.template import RequestContext
 from django.http import Http404
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from cblog.models import Entry, Category
 from cblog.config import setting
 from cblog.forms import EntryForm
@@ -22,9 +23,18 @@ def cblog_logout(request):
 def cblog_index(request):
 
     if request.user.is_authenticated():
-        entry_list=Entry.objects.all()
+        all_list=Entry.objects.all()
     else:
-        entry_list=Entry.objects.filter(isdraft=False)
+        all_list=Entry.objects.filter(isdraft=False)
+
+    paginator=Paginator(all_list,10)
+    page=request.GET.get('page')
+    try:
+        entry_list=paginator.page(page)
+    except PageNotAnInteger:
+        entry_list=paginator.page(1)
+    except EmptyPage:
+        entry_list=paginator.page(paginator.num_pages)
 
     c = RequestContext(request,
                        {"entry_list": entry_list,
@@ -61,7 +71,7 @@ def cblog_edit(request, id=""):
         form=EntryForm(request.POST,instance=entry)
         if form.is_valid():
             form.save()
-            return redirect("/cblog/%s"%form.instance.slug)
+            return redirect("%s"%reverse(cblog_entry, args=(form.instance.slug,)))
     else:
         form=EntryForm(instance=entry)
 
