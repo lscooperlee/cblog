@@ -6,9 +6,9 @@ from django.core.urlresolvers import reverse
 
 
 class Comment(models.Model):
-    author=models.CharField(max_length=128)
+    name=models.CharField(max_length=128)
     email=models.EmailField(blank=True)
-    body=models.TextField()
+    comment=models.TextField()
 
 class Category(models.Model):
     title=models.CharField(max_length=250)

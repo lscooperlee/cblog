@@ -18,6 +18,10 @@
     color: rgba(32,32,32,1);
 }
 
+.commentblock {
+    background-color: whitesmoke;
+}
+
 .ribbon {
     background: rgba(228,228,228,1);
     position: absolute;

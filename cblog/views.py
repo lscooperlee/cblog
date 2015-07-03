@@ -6,9 +6,9 @@ from django.contrib.auth.models import User
 from django.template import RequestContext
 from django.http import Http404
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from cblog.models import Entry, Category
+from cblog.models import Entry, Category, Comment
 from cblog.config import setting
-from cblog.forms import EntryForm
+from cblog.forms import EntryForm, CommentForm
 
 def cblog_login(request):
     if request.user.is_authenticated():
@@ -36,8 +36,10 @@ def cblog_index(request):
     except EmptyPage:
         entry_list=paginator.page(paginator.num_pages)
 
+    commentform=CommentForm()
     c = RequestContext(request,
                        {"entry_list": entry_list,
+                        "commentform": commentform,
                         "category_list": Category.objects.all(),
                         "setting": setting,
                         "user":User}
@@ -50,8 +52,10 @@ def cblog_entry(request,slug):
     except:
         raise Http404()
 
+    commentform=CommentForm()
     c = RequestContext(request,
                        {"entry": entry,
+                        "commentform":commentform,
                         "category_list": Category.objects.all(),
                         "setting": setting,
                         "user":User}

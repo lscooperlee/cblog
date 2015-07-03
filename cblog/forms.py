@@ -1,5 +1,5 @@
 from django.forms import ModelForm, SlugField
-from cblog.models import Entry
+from cblog.models import Entry, Comment
 
 class EntryForm(ModelForm):
 
@@ -10,3 +10,9 @@ class EntryForm(ModelForm):
     def save(self, commit=True):
         slug=SlugField(required=False)
         super().save(commit)
+
+
+class CommentForm(ModelForm):
+    class Meta:
+        model=Comment
+        fields=['name','comment']
