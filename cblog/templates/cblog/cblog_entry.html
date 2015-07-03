@@ -2,6 +2,7 @@
 {% block css %}
 {% load staticfiles %}
 <link rel="stylesheet" type="text/css" href={% static "cblog/article.css" %}>
+<link rel="stylesheet" type="text/css" href={% static "cblog/edit.css" %}>
 {% endblock %}
 {% block section %}
     <div>
@@ -23,13 +24,7 @@
         <div class="article" id={{ entry.slug }}>
             <div class="article_title"><a href={% url 'reverse_cblog_entry' entry.slug %}>{{ entry.title }}</a></div>
             <div class="article_body">{{ entry.body|safe }}</div>
-            <div class="commentblock">
-                <form action="" method="post">
-                    {% csrf_token %}
-                    {{ commentform.as_p }}
-                    <input type="submit" value="publish" />
-                </form>
-            </div>
+            {% include 'cblog/cblog_comment.html' %}
         </div>
         </li>
         </ol>

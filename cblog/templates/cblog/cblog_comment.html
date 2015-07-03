@@ -1,0 +1,9 @@
+<div class="commentwrap">
+    <form action="" method="post" class="commentblock">
+        {% csrf_token %}
+        {{ commentform.as_p }}
+        <div class="submit">
+            <input type="submit" value="publish" />
+        </div>
+    </form>
+</div>

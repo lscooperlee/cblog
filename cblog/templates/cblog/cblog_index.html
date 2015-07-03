@@ -2,6 +2,7 @@
 {% block css %}
 {% load staticfiles %}
 <link rel="stylesheet" type="text/css" href={% static "cblog/article.css" %}>
+<link rel="stylesheet" type="text/css" href={% static "cblog/edit.css" %}>
 {% endblock %}
 {% block section %}
     <div>
@@ -26,13 +27,7 @@
                 {% if forloop.first and entry_list.number == 1 %}
                     <div class="article_body">
                     <div class="textblock">{{ entry.body|safe }}</div>
-                    <div class="commentblock">
-                        <form action="" method="post">
-                            {% csrf_token %}
-                            {{ commentform.as_p }}
-                            <input type="submit" value="publish" />
-                        </form>
-                    </div>
+                    {% include 'cblog/cblog_comment.html' %}
                     </div>
                 {% else %}
                     <div class="article_body">{{ entry.body|truncatewords_html:100 }}<a href={% url 'reverse_cblog_entry' entry.slug %}>MORE</a></div>
