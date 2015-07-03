@@ -100,6 +100,7 @@ nav > * {
 nav > #navigator {
     flex-grow: 12;
     position: relative;
+    padding-left: 2rem;
 }
 
 

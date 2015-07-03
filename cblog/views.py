@@ -4,17 +4,19 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.models import User
 from django.template import RequestContext
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from cblog.models import Entry, Category, Comment
 from cblog.config import setting
 from cblog.forms import EntryForm, CommentForm
 
-def cblog_login(request):
+def cblog_login(request, context={}):
     if request.user.is_authenticated():
             return redirect('%s' %reverse(cblog_index))
-
-    para = {'template_name': 'cblog/cblog_login.html', 'extra_context': {"setting": setting}}
+    context['setting']=setting
+    if 'next' not in request.GET:
+        context['next']=request.get_full_path()
+    para = {'template_name': 'cblog/cblog_login.html', 'extra_context': context}
     return auth_views.login(request, **para)
 
 def cblog_logout(request):
@@ -46,9 +48,9 @@ def cblog_index(request):
                        )
     return render_to_response("cblog/cblog_index.html", c)
 
-def cblog_entry(request,slug):
+def cblog_entry(request,slug, id):
     try:
-        entry=Entry.objects.get(slug=slug)
+        entry=Entry.objects.get(id=id)
     except:
         raise Http404()
 
@@ -75,7 +77,7 @@ def cblog_edit(request, id=""):
         form=EntryForm(request.POST,instance=entry)
         if form.is_valid():
             form.save()
-            return redirect("%s"%reverse(cblog_entry, args=(form.instance.slug,)))
+            return redirect("%s"%reverse(cblog_entry, args=(form.instance.slug,form.instance.id)))
     else:
         form=EntryForm(instance=entry)
 
@@ -103,3 +105,18 @@ def cblog_delete(request, id):
 
     return redirect('%s' %reverse(cblog_index))
 
+
+def cblog_comment(request, id):
+    if request.method == 'POST':
+        try:
+            entry=Entry.objects.get(id=id)
+            commentform=CommentForm(request.POST)
+            if commentform.is_valid():
+                comment=commentform.save(commit=False)
+                comment.entry=entry
+                comment.save()
+
+        except Entry.DoesNotExist:
+            raise Http404()
+
+    return redirect('%s' %reverse(cblog_index))
