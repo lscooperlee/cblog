@@ -172,7 +172,7 @@ section {
 
 section > div {
     text-align: center;
-    width: 90%;
+    width: 72%;
     margin-left: auto;
     margin-right: auto;
     margin-top: 2rem;
@@ -191,9 +191,13 @@ section .centerblock {
     padding-bottom: 2rem;
 }
 
+aside {
+    width: 0;
+}
+
 footer {
     position: relative;
-    bottom: -8rem;
+    bottom: -6rem;
     height: 12rem;
     background-color: black;
 }

@@ -15,10 +15,10 @@ class EntryForm(ModelForm):
 class CommentForm(ModelForm):
     class Meta:
         model=Comment
-        fields=['name','comment']
+        fields=['name','content']
         widgets={
             'name': TextInput(attrs={"placeholder": 'name'}),
-            'comment': Textarea(attrs={"placeholder": 'comment'})
+            'content': Textarea(attrs={"placeholder": 'comment'})
         }
 
 

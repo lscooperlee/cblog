@@ -48,9 +48,10 @@ def cblog_index(request):
                        )
     return render_to_response("cblog/cblog_index.html", c)
 
-def cblog_entry(request,slug, id):
+def cblog_entry(request, slug, id):
     try:
         entry=Entry.objects.get(id=id)
+        comments=Comment.objects.filter(entry=entry)
     except:
         raise Http404()
 
@@ -58,6 +59,7 @@ def cblog_entry(request,slug, id):
     c = RequestContext(request,
                        {"entry": entry,
                         "commentform":commentform,
+                        "comment_list":comments,
                         "category_list": Category.objects.all(),
                         "setting": setting,
                         "user":User}
@@ -95,6 +97,8 @@ def cblog_delete(request, id):
     try:
         entry=Entry.objects.get(pk=id)
         if entry.isdraft:
+            comments=Comment.objects.filter(entry=entry)
+            comments.delete()
             entry.delete()
         else:
             entry.isdraft=True
@@ -106,10 +110,11 @@ def cblog_delete(request, id):
     return redirect('%s' %reverse(cblog_index))
 
 
-def cblog_comment(request, id):
+def cblog_comment(request, entry_id, comment_id=None):
+
     if request.method == 'POST':
         try:
-            entry=Entry.objects.get(id=id)
+            entry=Entry.objects.get(id=entry_id)
             commentform=CommentForm(request.POST)
             if commentform.is_valid():
                 comment=commentform.save(commit=False)
@@ -119,4 +124,8 @@ def cblog_comment(request, id):
         except Entry.DoesNotExist:
             raise Http404()
 
-    return redirect('%s' %reverse(cblog_index))
+    if request.GET.get('index','NO') == 'NO':
+        return redirect("%s"%reverse(cblog_entry, args=(entry.slug,entry.id)))
+    else:
+        return redirect("%s"%reverse(cblog_index))
+

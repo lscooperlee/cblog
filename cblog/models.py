@@ -34,14 +34,12 @@ class Entry(models.Model):
         self.slug=slugify(self.title)
         super().save(force_insert,force_update,using,update_fields)
 
-    def delete(self, using=None):
-        comments=Comment.objects.filter(id=self.comments_id)
-        comments.delete()
-        super().delete(using)
 
 class Comment(models.Model):
     name=models.CharField(max_length=128)
     email=models.EmailField(blank=True)
-    comment=models.TextField()
+    content=models.TextField()
     entry=models.ForeignKey(Entry)
+    pub_date=models.DateTimeField(default=datetime.now)
+    replyto_comment=models.ForeignKey('self',blank=True, null=True)
 
