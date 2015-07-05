@@ -1,5 +1,5 @@
 <div class="commentwrap">
-    <form action="{% url 'reverse_cblog_comment' entry.id comment.id %}?index={{ index }}" method="post" class="commentblock">
+    <form action="{% url 'reverse_cblog_edit_comment' entry.id comment.id %}?index={{ index }}" method="post" class="commentblock">
         {% csrf_token %}
         {{ commentform.as_p }}
         <div class="submit">
@@ -9,6 +9,9 @@
     <ol>
     {% for comment in comment_list %}
         <li>
+        {% if user.is_authenticated %}
+        <div class="commentmanage"><a href="{% url 'reverse_cblog_delete_comment' entry.id comment.id %}">X</a></div>
+        {% endif %}
         <p>{{ comment.name }}:</p>
         <p><blockquote>{{ comment.content }}</blockquote></p>
         <p>{{ comment.pub_date }}:</p>

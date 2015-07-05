@@ -110,8 +110,7 @@ def cblog_delete(request, id):
     return redirect('%s' %reverse(cblog_index))
 
 
-def cblog_comment(request, entry_id, comment_id=None):
-
+def cblog_edit_comment(request, entry_id, comment_id=None):
     if request.method == 'POST':
         try:
             entry=Entry.objects.get(id=entry_id)
@@ -129,3 +128,8 @@ def cblog_comment(request, entry_id, comment_id=None):
     else:
         return redirect("%s"%reverse(cblog_index))
 
+def cblog_delete_comment(request, comment_id, entry_id):
+    entry=get_object_or_404(Entry, id=entry_id)
+    comment=get_object_or_404(Comment,id=comment_id)
+    comment.delete()
+    return redirect("%s"%reverse(cblog_entry, args=(entry.slug, entry.id)))
