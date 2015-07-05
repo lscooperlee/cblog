@@ -12,10 +12,6 @@ section form label {
 }
 
 
-section form span {
-    display: none;
-}
-
 section form input, section form textarea {
     border: solid 1px #E5E5E5;
     padding: 0.3rem;
@@ -87,9 +83,5 @@ section .commentblock {
 
 section .commentblock textarea {
     width: 100%;
-}
-
-section .commentblock label {
-    display: none;
 }
 

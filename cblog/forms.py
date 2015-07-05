@@ -1,16 +1,41 @@
-from django.forms import ModelForm, SlugField, TextInput, Textarea
-from cblog.models import Entry, Comment
+from django.core.exceptions import ValidationError
+from django.utils.translation import ugettext as _
+from django.forms import ModelForm, SlugField, TextInput, Textarea, ModelMultipleChoiceField, CharField
+from cblog.models import Entry, Comment, Category
+
+
+class TextInputModelMultipleChoiceField(ModelMultipleChoiceField):
+    widget = TextInput
+
+    def clean(self, value):
+        if value is None:
+            raise ValidationError(_('not empty: %s') % value)
+        return value
 
 class EntryForm(ModelForm):
+    category=TextInputModelMultipleChoiceField(required=True, queryset=Category.objects.filter(),to_field_name='categories')
 
     class Meta:
         model=Entry
-        fields=['title','pub_date','author','isdraft','categories','body']
+        fields=['title','pub_date','author','isdraft','category','body']
+
+        labels={
+            'pub_date': 'date',
+            'isdraft': 'draft',
+        }
+
+        help_texts={
+            'title':'',
+        }
 
     def save(self, commit=True):
         slug=SlugField(required=False)
-        super().save(commit)
-
+        e=super().save()
+        category_list=self.cleaned_data.get('category',"")
+        for c in category_list.split(','):
+            cateobj=Category.objects.get_or_create(title=c)[0]
+            self.instance.categories.add(cateobj)
+        return e.save()
 
 class CommentForm(ModelForm):
     class Meta:
@@ -20,5 +45,8 @@ class CommentForm(ModelForm):
             'name': TextInput(attrs={"placeholder": 'name'}),
             'content': Textarea(attrs={"placeholder": 'comment'})
         }
-
+        labels={
+            'name':'',
+            'content':'',
+        }
 

@@ -117,9 +117,8 @@ def cblog_edit_comment(request, entry_id, comment_id=None):
             entry=Entry.objects.get(id=entry_id)
             commentform=CommentForm(request.POST)
             if commentform.is_valid():
-                comment=commentform.save(commit=False)
-                comment.entry=entry
-                comment.save()
+                commentform.instance.entry=entry
+                commentform.save()
 
         except Entry.DoesNotExist:
             raise Http404()
