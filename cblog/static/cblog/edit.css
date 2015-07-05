@@ -65,7 +65,6 @@ section .commentwrap li blockquote {
     font-style: italic;
 }
 
-
 section .commentwrap li:nth-child(odd){
     background-color: #f8f8f8;
 }

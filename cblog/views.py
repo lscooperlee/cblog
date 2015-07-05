@@ -111,6 +111,7 @@ def cblog_delete(request, id):
 
 
 def cblog_edit_comment(request, entry_id, comment_id=None):
+
     if request.method == 'POST':
         try:
             entry=Entry.objects.get(id=entry_id)
