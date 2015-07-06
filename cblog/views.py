@@ -167,3 +167,33 @@ def cblog_delete_category(request, category_id):
     category.delete()
 
     return redirect("%s"%reverse(cblog_category))
+
+def cblog_datelist_article(request, year=None):
+    if year:
+        if request.user.is_authenticated():
+            datelist=[{'year': year, 'entries':get_list_or_404(Entry, pub_date__year=year)}]
+        else:
+            datelist=[{'year': year, 'entries':get_list_or_404(Entry, pub_date__year=year,isdraft=False)}]
+
+    else:
+        datelist=[]
+        if request.user.is_authenticated():
+            dates=Entry.objects.all().datetimes('pub_date','year', order='DESC')
+        else:
+            dates=Entry.objects.filter(isdraft=False).datetimes('pub_date','year', order='DESC')
+
+        for d in dates:
+            entrylist=Entry.objects.filter(pub_date__year=d.year)
+            datedict={}
+            if entrylist:
+                datedict['year']=d.year
+                datedict['entries']=entrylist
+                datelist.append(datedict)
+
+    print(datelist)
+    reqcontext=RequestContext(request,{
+        "article_year_list": datelist,
+        "user":User,
+        "setting":setting
+    })
+    return render_to_response("cblog/cblog_articlelist.html",reqcontext)
