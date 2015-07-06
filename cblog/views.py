@@ -65,7 +65,7 @@ def cblog_entry(request, slug, id):
     return render(request, "cblog/cblog_entry.html", c)
 
 
-@login_required(login_url="/cblog/login")
+@login_required(login_url="/blog/login")
 def cblog_edit(request, id=""):
 
     if id:
@@ -87,7 +87,7 @@ def cblog_edit(request, id=""):
         }
     return render(request,"cblog/cblog_edit.html",c)
 
-@login_required(login_url="/cblog/login")
+@login_required(login_url="/blog/login")
 def cblog_delete(request, id):
 
     try:
@@ -124,7 +124,7 @@ def cblog_edit_comment(request, entry_id, comment_id=None):
     else:
         return redirect("%s"%reverse(cblog_index))
 
-@login_required(login_url="/cblog/login")
+@login_required(login_url="/blog/login")
 def cblog_delete_comment(request, comment_id, entry_id):
     entry=get_object_or_404(Entry, id=entry_id)
     comment=get_object_or_404(Comment,id=comment_id)
@@ -151,7 +151,7 @@ def cblog_category(request, category_id=None):
                 }
     return render(request, "cblog/cblog_category.html",reqcontext)
 
-@login_required(login_url="/cblog/login")
+@login_required(login_url="/blog/login")
 def cblog_delete_category(request, category_id):
     category=get_object_or_404(Category,id=category_id)
     entry_list=Entry.objects.filter(categories=category_id)
@@ -191,7 +191,7 @@ def cblog_datelist_article(request, year=None):
     }
     return render(request, "cblog/cblog_articlelist.html",reqcontext)
 
-
+@login_required(login_url="/blog/login")
 def cblog_images_upload(request):
     from django import forms
     from django.template import Template
@@ -224,3 +224,5 @@ def cblog_images_upload(request):
     template=Template(templatestr)
     html=template.render(context=RequestContext(request,{'form':form}))
     return HttpResponse(html)
+
+
