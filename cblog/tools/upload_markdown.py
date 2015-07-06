@@ -1,5 +1,6 @@
 import requests
-
+import re
+from datetime import datetime
 
 
 class login_uploader:
@@ -25,6 +26,44 @@ class login_uploader:
             self.client.post(url,upload_data,files=files)
 
 
+    def post_blog(self, content, url, category='Uncategorized', authorname='admin', isdraft=False):
+
+        content=content.strip()
+        ret=re.search(r'#{1}.+\n',content)
+        if ret:
+            title=ret.group(0)[1:]
+            body=content[len(title):]
+        else:
+            title="No Subject"
+            body=content
+
+        pub_date=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        r=self.client.get(url)
+        csrftoken=self.client.cookies['csrftoken']
+
+        ret=re.findall(r'<option.+?/option>',str(r.content))
+        for i in ret:
+            ret=re.search(r'value="(?P<v>\d+)".*?>(?P<name>\w+)<',i)
+            if ret:
+                d=ret.groupdict()
+                if authorname == d['name']:
+                    author=d['v']
+
+        payload={
+            'title': title,
+            'pub_date': pub_date,
+            'author': author,
+            'isdraft':isdraft,
+            'category': category,
+            'body':body,
+            'csrfmiddlewaretoken':csrftoken,
+        }
+
+        r=self.client.post(url,data=payload)
+
+
+
     def _prepare_csrftoken(self,url):
         self.client.get(url)
         csrftoken=self.client.cookies['csrftoken']
@@ -34,4 +73,10 @@ class login_uploader:
 if __name__=='__main__':
     up=login_uploader()
     up.login('admin','admin','http://127.0.0.1:8000/blog/login')
-    up.upload('/tmp/t.jpg','http://127.0.0.1:8000/blog/images_upload/')
+    aaa="""
+            #this is titleaa
+            ##subtitles aaaa
+        """
+    up.post_blog(aaa, 'http://127.0.0.1:8000/blog/edit/','cate')
+#    up.upload('/tmp/t.jpg','http://127.0.0.1:8000/blog/images_upload/')
+
