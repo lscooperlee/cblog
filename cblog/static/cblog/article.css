@@ -1,11 +1,12 @@
 
 .article {
     text-align: justify;
+    padding-top: 2rem;
 }
 
 .article_title {
     font-size: 2rem;
-    margin: 1rem 1rem 2rem 1rem;
+    margin: 0rem 1rem 2rem 1rem;
     text-align: center;
 }
 

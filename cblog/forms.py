@@ -32,10 +32,13 @@ class EntryForm(ModelForm):
         slug=SlugField(required=False)
 #        e=super().save(commit=False) #error
         e=super().save()
-        category_list=self.cleaned_data.get('category',"")
+        category_list=self.cleaned_data.get('category',"").strip()
+        category_list=category_list if category_list else "Uncategorized"
+
         for c in category_list.split(','):
             cateobj=Category.objects.get_or_create(title=c)[0]
             e.categories.add(cateobj)
+
         return e.save()
 
 class CommentForm(ModelForm):

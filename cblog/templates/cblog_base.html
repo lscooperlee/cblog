@@ -20,7 +20,7 @@
 <div id="navigator">
     <ul>
     <li><a href="{% url 'reverse_cblog_index' %}">Home</a></li>
-    <li><a href="#">Categories</a></li>
+    <li><a href="{% url 'reverse_cblog_category' %}">Categories</a></li>
     <li><a href="#">Articles</a></li>
     <li><a href="#">About</a>
     {% if user.is_authenticated %}

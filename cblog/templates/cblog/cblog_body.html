@@ -6,7 +6,7 @@
             {% if entry.categories.all.count == 1 %}Category{% else %}Categories{% endif %}:
         </div>
         {% for category in entry.categories.all %}
-        <li><a href="">{{  category }}</a></li>
+        <li><a href="{% url 'reverse_cblog_category' category.id %}">{{  category }}</a></li>
         {% endfor %}
     </ul>
 </div>

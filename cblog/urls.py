@@ -10,5 +10,8 @@ urlpatterns=patterns('',
     url(r'^comment/(?P<entry_id>\d*)/$', 'cblog.views.cblog_edit_comment', name='reverse_cblog_edit_comment'),
     url(r'^comment/(?P<entry_id>\d*)/(?P<comment_id>\d*)/$', 'cblog.views.cblog_edit_comment', name='reverse_cblog_edit_comment'),
     url(r'^delete_comment/(?P<entry_id>\d*)/(?P<comment_id>\d*)/$', 'cblog.views.cblog_delete_comment', name='reverse_cblog_delete_comment'),
+    url(r'^category/$', 'cblog.views.cblog_category', name='reverse_cblog_category'),
+    url(r'^category/(?P<category_id>\d*)/$', 'cblog.views.cblog_category', name='reverse_cblog_category'),
+    url(r'^delete_category/(?P<category_id>\d*)/$', 'cblog.views.cblog_delete_category', name='reverse_cblog_delete_category'),
     url(r'^entry/(?P<slug>\w+)/(?P<id>\d*)/$','cblog.views.cblog_entry',name='reverse_cblog_entry'),
 )

@@ -1,4 +1,4 @@
-from django.shortcuts import render_to_response, redirect, get_object_or_404
+from django.shortcuts import render_to_response, redirect, get_object_or_404, get_list_or_404
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import views as auth_views
@@ -128,8 +128,42 @@ def cblog_edit_comment(request, entry_id, comment_id=None):
     else:
         return redirect("%s"%reverse(cblog_index))
 
+@login_required(login_url="/cblog/login")
 def cblog_delete_comment(request, comment_id, entry_id):
     entry=get_object_or_404(Entry, id=entry_id)
     comment=get_object_or_404(Comment,id=comment_id)
     comment.delete()
     return redirect("%s"%reverse(cblog_entry, args=(entry.slug, entry.id)))
+
+def cblog_category(request, category_id=None):
+    if category_id:
+        category_list=get_list_or_404(Category, id=category_id)
+    else:
+        category_list=Category.objects.all()
+
+    category_info_list=[]
+    for c in category_list:
+        if  request.user.is_authenticated():
+            cate_info={'category':c, 'entries':Entry.objects.filter(categories=c)}
+        else:
+            cate_info={'category':c, 'entries':Entry.objects.filter(categories=c, isdraft=False)}
+        category_info_list.append(cate_info)
+
+    reqcontext=RequestContext(request,{
+                                "category_list":category_info_list,
+                                "user":User,
+                                "setting":setting
+                            })
+    return render_to_response("cblog/cblog_category.html",reqcontext)
+
+@login_required(login_url="/cblog/login")
+def cblog_delete_category(request, category_id):
+    category=get_object_or_404(Category,id=category_id)
+    entry_list=Entry.objects.filter(categories=category_id)
+    for e in entry_list:
+        if len(e.categories.all()) <= 1:
+            e.categories.add(Category.objects.get_or_create(title='Uncategorized')[0])
+            e.save()
+    category.delete()
+
+    return redirect("%s"%reverse(cblog_category))
