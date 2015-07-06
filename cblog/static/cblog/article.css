@@ -154,3 +154,16 @@
     right: -0.8rem;
     box-shadow: 3px 0px 2px #888;
 }
+
+.article_links {
+    margin-top: 2rem;
+}
+.article_links div {
+    display: inline;
+    font-size: large;
+    font-weight: bold;
+}
+.article_links li {
+    display: inline;
+    margin-right: 0.5rem;
+}

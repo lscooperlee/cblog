@@ -22,9 +22,7 @@
             </div>
         {% endif %}
         <div class="article" id={{ entry.slug }}>
-            <div class="article_title"><a href={% url 'reverse_cblog_entry' entry.slug entry.id %}>{{ entry.title }}</a></div>
-            <div class="article_body">{{ entry.body|safe }}</div>
-            {% include 'cblog/cblog_comment.html' with index="NO" %}
+            {% include 'cblog/cblog_body.html' with index="NO" %}
         </div>
         </li>
         </ol>
