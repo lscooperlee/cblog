@@ -1,6 +1,6 @@
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext as _
-from django.forms import ModelForm, SlugField, TextInput, Textarea, ModelMultipleChoiceField, CharField
+from django.forms import ModelForm, SlugField, TextInput, Textarea, ModelMultipleChoiceField, FileField, Form
 from cblog.models import Entry, Comment, Category
 
 

@@ -15,5 +15,6 @@ urlpatterns=patterns('',
     url(r'^delete_category/(?P<category_id>\d*)/$', 'cblog.views.cblog_delete_category', name='reverse_cblog_delete_category'),
     url(r'^date_list/$', 'cblog.views.cblog_datelist_article', name='reverse_cblog_datelist_article'),
     url(r'^date_list/(?P<year>\d{4})/$', 'cblog.views.cblog_datelist_article', name='reverse_cblog_datelist_article'),
+    url(r'^images_upload/$', 'cblog.views.cblog_images_upload', name='reverse_cblog_images_upload'),
     url(r'^entry/(?P<slug>\w+)/(?P<id>\d*)/$','cblog.views.cblog_entry',name='reverse_cblog_entry'),
 )

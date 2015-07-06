@@ -1,4 +1,4 @@
-from django.shortcuts import render_to_response, redirect, get_object_or_404, get_list_or_404
+from django.shortcuts import render_to_response, redirect, get_object_or_404, get_list_or_404, render
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import views as auth_views
@@ -9,6 +9,7 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from cblog.models import Entry, Category, Comment
 from cblog.config import setting
 from cblog.forms import EntryForm, CommentForm
+
 
 def cblog_login(request, context={}):
     if request.user.is_authenticated():
@@ -39,14 +40,12 @@ def cblog_index(request):
         entry_list=paginator.page(paginator.num_pages)
 
     commentform=CommentForm()
-    c = RequestContext(request,
-                       {"entry_list": entry_list,
+    c = {"entry_list": entry_list,
                         "commentform": commentform,
                         "category_list": Category.objects.all(),
                         "setting": setting,
-                        "user":User}
-                       )
-    return render_to_response("cblog/cblog_index.html", c)
+        }
+    return render(request, "cblog/cblog_index.html", c)
 
 def cblog_entry(request, slug, id):
     try:
@@ -56,15 +55,14 @@ def cblog_entry(request, slug, id):
         raise Http404()
 
     commentform=CommentForm()
-    c = RequestContext(request,
-                       {"entry": entry,
-                        "commentform":commentform,
-                        "comment_list":comments,
-                        "category_list": Category.objects.all(),
-                        "setting": setting,
-                        "user":User}
-                       )
-    return render_to_response("cblog/cblog_entry.html", c)
+    c = {
+            "entry": entry,
+            "commentform":commentform,
+            "comment_list":comments,
+            "category_list": Category.objects.all(),
+            "setting": setting,
+        }
+    return render(request, "cblog/cblog_entry.html", c)
 
 
 @login_required(login_url="/cblog/login")
@@ -83,13 +81,11 @@ def cblog_edit(request, id=""):
     else:
         form=EntryForm(instance=entry)
 
-    c = RequestContext(request,
-                       {"form":form,
-                        "setting": setting,
-                        "id": id,
-                        "user": User}
-                       )
-    return render_to_response("cblog/cblog_edit.html",c)
+    c = {"form":form,
+        "setting": setting,
+        "id": id,
+        }
+    return render(request,"cblog/cblog_edit.html",c)
 
 @login_required(login_url="/cblog/login")
 def cblog_delete(request, id):
@@ -149,12 +145,11 @@ def cblog_category(request, category_id=None):
             cate_info={'category':c, 'entries':Entry.objects.filter(categories=c, isdraft=False)}
         category_info_list.append(cate_info)
 
-    reqcontext=RequestContext(request,{
-                                "category_list":category_info_list,
-                                "user":User,
-                                "setting":setting
-                            })
-    return render_to_response("cblog/cblog_category.html",reqcontext)
+    reqcontext={
+                    "category_list":category_info_list,
+                    "setting":setting
+                }
+    return render(request, "cblog/cblog_category.html",reqcontext)
 
 @login_required(login_url="/cblog/login")
 def cblog_delete_category(request, category_id):
@@ -190,10 +185,42 @@ def cblog_datelist_article(request, year=None):
                 datedict['entries']=entrylist
                 datelist.append(datedict)
 
-    print(datelist)
-    reqcontext=RequestContext(request,{
+    reqcontext={
         "article_year_list": datelist,
-        "user":User,
         "setting":setting
-    })
-    return render_to_response("cblog/cblog_articlelist.html",reqcontext)
+    }
+    return render(request, "cblog/cblog_articlelist.html",reqcontext)
+
+
+def cblog_images_upload(request):
+    from django import forms
+    from django.template import Template
+
+    class ImagesUploadForm(forms.Form):
+        images=forms.FileField()
+
+    def upload_images(f):
+        with open('/tmp/test.jpg', 'wb+') as destination:
+            for chunk in f.chunks():
+                destination.write(chunk)
+
+    if request.method == 'POST':
+        form=ImagesUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            f=request.FILES['images']
+            upload_images(f)
+            return redirect("%s"%request.get_full_path())
+    else:
+        form=ImagesUploadForm()
+
+    templatestr="""
+    <form action="{% url 'reverse_cblog_images_upload' %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="save" >
+    </form>
+    """
+
+    template=Template(templatestr)
+    html=template.render(context=RequestContext(request,{'form':form}))
+    return HttpResponse(html)
