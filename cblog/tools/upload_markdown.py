@@ -74,7 +74,7 @@ if __name__=='__main__':
     up=login_uploader()
     up.login('admin','admin','http://127.0.0.1:8000/blog/login')
     aaa="""
-            #this is titleaa
+            #this is tiasdfasdftleaa
             ##subtitles aaaa
         """
     up.post_blog(aaa, 'http://127.0.0.1:8000/blog/edit/','cate')

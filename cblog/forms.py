@@ -28,13 +28,22 @@ class EntryForm(ModelForm):
             'title':'',
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args,**kwargs)
+        try:
+            cc=self.instance.categories.all()
+            s=','.join([ str(c) for c in cc ])
+            self.fields['category'].initial=s
+        except ValueError:
+            pass
+
     def save(self, commit=True):
         slug=SlugField(required=False)
 #        e=super().save(commit=False) #error
         e=super().save()
         category_list=self.cleaned_data.get('category',"").strip()
         category_list=category_list if category_list else "Uncategorized"
-
+        e.categories.clear()
         for c in category_list.split(','):
             cateobj=Category.objects.get_or_create(title=c)[0]
             e.categories.add(cateobj)
