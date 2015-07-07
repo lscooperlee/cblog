@@ -31,17 +31,18 @@ class login_uploader:
         content=content.strip()
         ret=re.search(r'#{1}.+\n',content)
         if ret:
-            title=ret.group(0)[1:]
+            title=ret.group(0)[1:].strip()
             body=content[len(title):]
         else:
             title="No Subject"
             body=content
 
+        url=url if url[-1] == '/' else url+'/'
+        url=url+title.replace(' ','-')
         pub_date=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
         r=self.client.get(url)
         csrftoken=self.client.cookies['csrftoken']
-
         ret=re.findall(r'<option.+?/option>',str(r.content))
         for i in ret:
             ret=re.search(r'value="(?P<v>\d+)".*?>(?P<name>\w+)<',i)
@@ -75,8 +76,8 @@ if __name__=='__main__':
     up.login('admin','admin','http://127.0.0.1:8000/blog/login')
     aaa="""
             #this is tiasdfasdftleaa
-            ##subtitles aaaa
+            ##subtitles aaaa bbbb cccc
         """
-    up.post_blog(aaa, 'http://127.0.0.1:8000/blog/edit/','cate')
-#    up.upload('/tmp/t.jpg','http://127.0.0.1:8000/blog/images_upload/')
+    up.post_blog(aaa, 'http://127.0.0.1:8000/blog/post_upload/','cate')
+#    up.upload('/tmp/t.jpg','http://127.0.0.1:8000/blog/file_upload/')
 

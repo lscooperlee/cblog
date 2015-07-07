@@ -191,8 +191,20 @@ def cblog_datelist_article(request, year=None):
     }
     return render(request, "cblog/cblog_articlelist.html",reqcontext)
 
+
 @login_required(login_url="/blog/login")
-def cblog_images_upload(request):
+def cblog_post_upload(request, slug):
+    try:
+        e=Entry.objects.get(slug=slug)
+        id=e.id
+    except Entry.DoesNotExist:
+        id=""
+
+    return cblog_edit(request,id)
+
+
+@login_required(login_url="/blog/login")
+def cblog_file_upload(request):
     from django import forms
     from django.template import Template
 
@@ -214,7 +226,7 @@ def cblog_images_upload(request):
         form=ImagesUploadForm()
 
     templatestr="""
-    <form action="{% url 'reverse_cblog_images_upload' %}" method="post" enctype="multipart/form-data">
+    <form action="{% url 'reverse_cblog_file_upload' %}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form }}
     <input type="submit" value="save" >
