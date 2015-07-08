@@ -171,8 +171,11 @@
 }
 
 /*for markdown*/
-.article_body ul, .article_body ol {
+.article_body ul {
     list-style: inside;
+}
+.article_body ol {
+    list-style: decimal;
 }
 .article_body img {
     display: block;

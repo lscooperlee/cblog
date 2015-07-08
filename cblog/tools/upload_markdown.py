@@ -4,6 +4,7 @@ import os
 from datetime import datetime
 
 
+
 class markdown_media_parser:
 
     MEDIA_PATH='/media/'
@@ -40,9 +41,9 @@ class markdown_media_parser:
 
         basefile=os.path.splitext(os.path.basename(filename))[0]
 
-        p=re.compile(r'(?P<id>!\[.*\])\((?P<url>.*?)\s+.*\)')
+        p=re.compile(r'(?P<id>!\[.*\])\((?P<url>.*?)(\)|\s+.*\))')
         ret=p.findall(content)
-        file_list=[ x[1] for x in ret ]
+        file_list=[ x[1] for x in ret if not re.match(r'^https?://',x[1])]
         for i in file_list:
             newname=os.path.join(self.MEDIA_PATH, authorname,basefile,os.path.basename(i))
             content=content.replace(i,newname)
@@ -76,24 +77,31 @@ class login_uploader:
         ret=re.search(r'#{1}.+\n',content)
         if ret:
             title=ret.group(0)[1:].strip()
-            body=content[len(title)+1:]
+            body=content.replace(str(ret.group(0)),"")
         else:
             title="No Subject"
             body=content
 
         url=url if url[-1] == '/' else url+'/'
-        url=url+title.replace(' ','-')
+        url=url+re.sub(r'[^_\w\d]','_',title)
         pub_date=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
         r=self.client.get(url)
         csrftoken=self.client.cookies['csrftoken']
         ret=re.findall(r'<option.+?/option>',str(r.content))
+
+        author=None
         for i in ret:
             ret=re.search(r'value="(?P<v>\d+)".*?>(?P<name>\w+)<',i)
             if ret:
                 d=ret.groupdict()
                 if authorname == d['name']:
                     author=d['v']
+
+        if not author:
+            print("warning: no user %s on the website, try to use default one"%authorname)
+
+        author=1
 
         payload={
             'title': title,
@@ -104,6 +112,7 @@ class login_uploader:
             'body':body,
             'csrfmiddlewaretoken':csrftoken,
         }
+
 
         r=self.client.post(url,data=payload)
         if r != 200:
@@ -118,17 +127,24 @@ class login_uploader:
 
 
 if __name__=='__main__':
+    import argparse
+    import sys
 
-    p=markdown_media_parser('http://127.0.0.1:8000/blog/')
-    p.login('admin','admin')
-    p.upload('/home/cooper/linux_install.markdown','CA')
+    parser=argparse.ArgumentParser()
 
-    # up=login_uploader()
-    # up.login('admin','admin','http://127.0.0.1:8000/blog/login')
-    # aaa="""
-    #         #this is tiasdfasdftleaa
-    #         ##subtitles aaaa bbbb cccc
-    #     """
-    # up.post_blog(aaa, 'http://127.0.0.1:8000/blog/post_upload/','cate')
-    # up.upload('/tmp/t.jpg','http://127.0.0.1:8000/blog/file_upload/')
+    parser.add_argument('-u',nargs=1,required=True)
+    parser.add_argument('-p',nargs=1,required=True)
+    parser.add_argument('-a',nargs=1,required=True)
+    parser.add_argument('-c',nargs=1,required=True)
+    parser.add_argument('-f',nargs=1,required=True)
+    parser.add_argument('--url', nargs=1,required=True)
+
+    args=vars(parser.parse_args(sys.argv[1:]))
+    argdict={ k: args[k][0] for k in args}
+
+    p=markdown_media_parser(argdict['url'])
+    p.login(argdict['u'],argdict['p'])
+    p.upload(filename=argdict['f'],category=argdict['c'],authorname=argdict['u'])
+
+
 

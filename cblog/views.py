@@ -76,6 +76,7 @@ def cblog_edit(request, id=""):
     if request.method=='POST':
         form=EntryForm(request.POST,instance=entry)
         if form.is_valid():
+            print(form.cleaned_data['body'])
             form.save()
             return redirect("%s"%reverse(cblog_entry, args=(form.instance.slug,form.instance.id)))
     else:
