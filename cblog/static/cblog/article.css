@@ -6,8 +6,9 @@
 
 .article_title {
     font-size: 2rem;
-    margin: 0rem 1rem 2rem 1rem;
+    margin: 1rem 1rem 2rem 1rem;
     text-align: center;
+    font-weight: bold;
 }
 
 .article_title a {
@@ -167,4 +168,20 @@
 .article_links li {
     display: inline;
     margin-right: 0.5rem;
+}
+
+/*for markdown*/
+.article_body ul, .article_body ol {
+    list-style: inside;
+}
+.article_body img {
+    display: block;
+    box-sizing: border-box;
+    height: auto;
+    max-width: 100%;
+    margin: 2rem auto;
+    padding: 0.4rem;
+    border: dotted silver;
+    border-width: 0.1rem;
+    box-shadow: 0 0 1rem silver;
 }

@@ -1,6 +1,53 @@
 import requests
 import re
+import os
 from datetime import datetime
+
+
+class markdown_media_parser:
+
+    MEDIA_PATH='/media/'
+
+    def __init__(self,basicurl):
+        basicurl=basicurl if basicurl[-1] == '/' else basicurl+'/'
+        self.loginurl=basicurl+'login/'
+        self.posturl=basicurl+'post_upload/'
+        self.fileurl=basicurl+'file_upload/'
+        self.up=login_uploader()
+
+    def login(self,username,password):
+        self.up.login(username,password,self.loginurl)
+
+    def upload(self, filename, category='Uncategorized', authorname='admin', isdraft=False):
+
+        file_list, content = self.parse_local_files(filename,authorname)
+        sub=os.path.splitext(os.path.basename(filename))[0]
+        for f in file_list:
+            self.up.upload(f, self.fileurl, os.path.basename(sub))  #upload images
+
+        self.up.post_blog(content,self.posturl,category,authorname,isdraft)
+        self.up.upload(filename,self.fileurl) #upload_file
+
+
+    def parse_local_files(self, filename, authorname):
+        content=None
+
+        with open(filename,'r') as f:
+            content=f.read()
+
+        if not content:
+            return False
+
+        basefile=os.path.splitext(os.path.basename(filename))[0]
+
+        p=re.compile(r'(?P<id>!\[.*\])\((?P<url>.*?)\s+.*\)')
+        ret=p.findall(content)
+        file_list=[ x[1] for x in ret ]
+        for i in file_list:
+            newname=os.path.join(self.MEDIA_PATH, authorname,basefile,os.path.basename(i))
+            content=content.replace(i,newname)
+
+        return file_list,content
 
 
 class login_uploader:
@@ -13,17 +60,14 @@ class login_uploader:
         login_data={'username':username,'password':password,'csrfmiddlewaretoken':csrftoken}
         self.client.post(url,login_data)
 
-    def upload(self,filearg, url):
-        from _collections_abc import Iterable
-
-        if isinstance(filearg, Iterable) and not isinstance(filearg, str):
-            for f in filearg:
-                self.upload(f)
-        if isinstance(filearg, str):
-            files={'images':open(filearg, 'rb')}
-            csrftoken=self._prepare_csrftoken(url)
-            upload_data={'csrfmiddlewaretoken':csrftoken}
-            self.client.post(url,upload_data,files=files)
+    def upload(self,filearg, url, subdir=""):
+        files={'files':open(filearg, 'rb')}
+        csrftoken=self._prepare_csrftoken(url)
+        upload_data={'csrfmiddlewaretoken':csrftoken, "name":subdir}
+        r=self.client.post(url,upload_data,files=files)
+        if r.status_code != 200:
+            return False
+        return True
 
 
     def post_blog(self, content, url, category='Uncategorized', authorname='admin', isdraft=False):
@@ -32,7 +76,7 @@ class login_uploader:
         ret=re.search(r'#{1}.+\n',content)
         if ret:
             title=ret.group(0)[1:].strip()
-            body=content[len(title):]
+            body=content[len(title)+1:]
         else:
             title="No Subject"
             body=content
@@ -62,7 +106,9 @@ class login_uploader:
         }
 
         r=self.client.post(url,data=payload)
-
+        if r != 200:
+            return False
+        return True
 
 
     def _prepare_csrftoken(self,url):
@@ -72,12 +118,17 @@ class login_uploader:
 
 
 if __name__=='__main__':
-    up=login_uploader()
-    up.login('admin','admin','http://127.0.0.1:8000/blog/login')
-    aaa="""
-            #this is tiasdfasdftleaa
-            ##subtitles aaaa bbbb cccc
-        """
-    up.post_blog(aaa, 'http://127.0.0.1:8000/blog/post_upload/','cate')
-#    up.upload('/tmp/t.jpg','http://127.0.0.1:8000/blog/file_upload/')
+
+    p=markdown_media_parser('http://127.0.0.1:8000/blog/')
+    p.login('admin','admin')
+    p.upload('/home/cooper/linux_install.markdown','CA')
+
+    # up=login_uploader()
+    # up.login('admin','admin','http://127.0.0.1:8000/blog/login')
+    # aaa="""
+    #         #this is tiasdfasdftleaa
+    #         ##subtitles aaaa bbbb cccc
+    #     """
+    # up.post_blog(aaa, 'http://127.0.0.1:8000/blog/post_upload/','cate')
+    # up.upload('/tmp/t.jpg','http://127.0.0.1:8000/blog/file_upload/')
 

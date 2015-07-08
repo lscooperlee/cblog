@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from datetime import datetime
-from django.utils.text import slugify
+from markdown import markdown
 
 
 class Category(models.Model):
@@ -18,6 +18,7 @@ class Entry(models.Model):
     slug=models.SlugField(unique=True)
     exerpt=models.TextField(blank=True)
     body=models.TextField()
+    body_html=models.TextField(editable=False,blank=True)
     pub_date=models.DateTimeField(default=datetime.now)
     author=models.ForeignKey(User)
     isdraft=models.BooleanField(default=True)
@@ -32,6 +33,7 @@ class Entry(models.Model):
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
         self.slug=str(self.title).replace(' ','-')
+        self.body_html=markdown(self.body)
         super().save(force_insert,force_update,using,update_fields)
 
 

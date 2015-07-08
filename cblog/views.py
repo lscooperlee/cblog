@@ -1,14 +1,14 @@
-from django.shortcuts import render_to_response, redirect, get_object_or_404, get_list_or_404, render
+from django.shortcuts import redirect, get_object_or_404, get_list_or_404, render
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import views as auth_views
-from django.contrib.auth.models import User
 from django.template import RequestContext
 from django.http import Http404, HttpResponse
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from cblog.models import Entry, Category, Comment
 from cblog.config import setting
 from cblog.forms import EntryForm, CommentForm
+from django.conf import settings
 
 
 def cblog_login(request, context={}):
@@ -207,20 +207,30 @@ def cblog_post_upload(request, slug):
 def cblog_file_upload(request):
     from django import forms
     from django.template import Template
+    import os
 
     class ImagesUploadForm(forms.Form):
-        images=forms.FileField()
+        files=forms.FileField()
+        name=forms.CharField(required=False)
 
-    def upload_images(f):
-        with open('/tmp/test.jpg', 'wb+') as destination:
+    def upload_images(f,name):
+        dirname=os.path.join(settings.MEDIA_ROOT,request.user.username,name)
+        try:
+            os.mkdir(dirname)
+        except FileExistsError:
+            pass
+
+        filename=os.path.join(dirname,str(f))
+        with open(filename, 'wb+') as destination:
             for chunk in f.chunks():
                 destination.write(chunk)
 
     if request.method == 'POST':
         form=ImagesUploadForm(request.POST, request.FILES)
         if form.is_valid():
-            f=request.FILES['images']
-            upload_images(f)
+            f=request.FILES['files']
+            name=form.cleaned_data['name']
+            upload_images(f,name)
             return redirect("%s"%request.get_full_path())
     else:
         form=ImagesUploadForm()

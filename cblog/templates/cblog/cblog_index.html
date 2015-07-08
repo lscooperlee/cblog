@@ -25,7 +25,7 @@
                     {% include 'cblog/cblog_body.html' with index='YES' %}
                 {% else %}
                     <div class="article_title"><a href={% url 'reverse_cblog_entry' entry.slug entry.id %}>{{ entry.title }}</a></div>
-                    <div class="article_body">{{ entry.body|truncatewords_html:100 }}<a href={% url 'reverse_cblog_entry' entry.slug entry.id %}>MORE</a></div>
+                    <div class="article_body">{{ entry.body_html|safe|truncatewords_html:100 }}<a href={% url 'reverse_cblog_entry' entry.slug entry.id %}>MORE</a></div>
                 {% endif %}
             </div>
         </li>

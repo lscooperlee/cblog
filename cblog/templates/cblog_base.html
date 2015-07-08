@@ -10,7 +10,7 @@
 </head>
 <body>
 <header class="banner">
-<div class="titletext" id="title"><a href="#"><h1>{{ setting.title }}</h1></a></div>
+<div class="titletext" id="title"><a href="{% url 'reverse_cblog_index' %}"><h1>{{ setting.title }}</h1></a></div>
 <div class="titletext" id="subtitle">{{ setting.subtitle }}</div>
 <input id="searchinput" placeholder="Search" type="text" autocomplete="off" >
 </header>
