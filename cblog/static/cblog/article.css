@@ -175,7 +175,7 @@
     list-style: inside;
 }
 .article_body ol {
-    list-style: decimal;
+	list-style: inside decimal;
 }
 .article_body img {
     display: block;

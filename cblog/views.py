@@ -1,6 +1,8 @@
 from django.shortcuts import redirect, get_object_or_404, get_list_or_404, render
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
+
 from django.contrib.auth import views as auth_views
 from django.template import RequestContext
 from django.http import Http404, HttpResponse
@@ -202,7 +204,6 @@ def cblog_post_upload(request, slug):
         id=""
 
     return cblog_edit(request,id)
-
 
 @login_required(login_url="/blog/login")
 def cblog_file_upload(request):
