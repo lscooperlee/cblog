@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
-from markdown import markdown
 import re
 
 
@@ -35,8 +34,13 @@ class Entry(models.Model):
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
+        import markdown
+        from cblog.markdown_processor import CodeBlockExtension
         self.slug=re.sub(r'[^_\w\d]','_',str(self.title))
-        self.body_html=markdown(self.body)
+#        self.body_html=markdown.markdown(self.body)
+        self.body_html = markdown.markdown(self.body, extensions=[CodeBlockExtension()])
+
+
         super().save(force_insert,force_update,using,update_fields)
 
 
