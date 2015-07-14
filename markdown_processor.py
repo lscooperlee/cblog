@@ -59,6 +59,8 @@ class CodeBlockPreprocessor(Preprocessor):
                 lexer = TextLexer()
             code = highlight(m.group(2), lexer, self.formatter)
             code = code.replace('\n\n', '\n&nbsp;\n').replace('\n', '<br />')
+            if code[-6:] == '<br />':
+                code=code[:-6]
             return '\n\n<div class="code">%s</div>\n\n' % code
         joined_lines = "\n".join(lines)
         joined_lines = self.pattern.sub(repl, joined_lines)
@@ -69,7 +71,3 @@ class CodeBlockExtension(Extension):
         md.preprocessors.add('CodeBlockPreprocessor', CodeBlockPreprocessor(), '_begin')
 
 
-if __name__=='__main__':
-    import markdown
-    html = markdown.markdown(open('/tmp/a.markdown','r').read(), extensions=[CodeBlockExtension()])
-    print(html)
