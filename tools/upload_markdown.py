@@ -69,7 +69,6 @@ class markdown_media_parser:
         if not content:
             return False
 
-
         p=re.compile(r'(?P<id>!\[.*\])\((?P<url>.*?)(\)|\s+.*\))')
         ret=p.findall(content)
         file_list=[ x[1] for x in ret if not re.match(r'^https?://',x[1])]
